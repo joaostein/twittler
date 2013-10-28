@@ -33,7 +33,7 @@ var Twittler = function () {
   this.createTweet = function (tweet) {
     var source = "<div class='tweet clearfix'>" +
                     "<div class='tweet-holder'>" +
-                      "<span class='tweet-username'>@{{user}}: </span>" +
+                      "<a class='tweet-username' href='#' data-username='{{user}}'>@{{user}}: </a>" +
                       "<span class='tweet-message'>{{message}}</span>" +
                     "</div>" +
                     "<span class='tweet-created-at'>{{created_at}}</span>" +
