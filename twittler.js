@@ -1,6 +1,6 @@
 var Twittler = function () {
   
-  var $body = $('body');
+  var tweetsWrapper = $('.tweetsWrapper');
   var homeTweetsLength = streams.home.length;
 
   this.init = function () {
@@ -31,9 +31,15 @@ var Twittler = function () {
   };
 
   this.createTweet = function (tweet) {
-    $("<div></div>", {
-      text: "@" + tweet.user + ": " + tweet.message + " - " + tweet.created_at
-    }).appendTo($body);
+    var source = "<div class='tweet'>" +
+                    "<span class='tweet-username'>@{{user}}: </span>" +
+                    "<span class='tweet-message'>{{message}}</span>" +
+                    "<span class='tweet-created-at'>{{created_at}}</span>" +
+                  "</div>";
+
+    var template = Handlebars.compile(source);
+    var result = template(tweet);
+    $(result).appendTo(tweetsWrapper);
   };
 
 };
