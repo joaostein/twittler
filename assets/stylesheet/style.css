@@ -33,6 +33,10 @@ body {
   padding: 15px 20px;
 }
 
+.tweet-message {
+  color: #5E5E5E;
+}
+
 .tweet:first-child {
   border-top: none;
 }
