@@ -32,7 +32,7 @@ var Twittler = function () {
 
   this.createTweet = function (tweet) {
     $("<div></div>", {
-      text: "@" + tweet.user + ": " + tweet.message
+      text: "@" + tweet.user + ": " + tweet.message + " - " + tweet.created_at
     }).appendTo($body);
   };
 
