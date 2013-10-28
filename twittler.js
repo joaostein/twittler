@@ -10,13 +10,10 @@ var Twittler = function () {
 
   this.fetchInitialData = function () {
     var index = homeTweetsLength - 1;
-    $body.html('');
-    
+
     while(index >= 0){
       var tweet = streams.home[index];
-      var $tweet = $('<div></div>');
-      $tweet.text('@' + tweet.user + ': ' + tweet.message);
-      $tweet.appendTo($body);
+      this.createTweet(tweet);
       index -= 1;
     }
   };
@@ -27,13 +24,16 @@ var Twittler = function () {
     setInterval(function () {
       var tweet = streams.home[index];
       if (typeof(tweet) === "object") {
-        $("<div></div>", {
-          text: "@" + tweet.user + ": " + tweet.message
-        }).appendTo($body);
+        Twittler.createTweet(tweet);
         index++;
       }
     }, 500);
+  };
 
+  this.createTweet = function (tweet) {
+    $("<div></div>", {
+      text: "@" + tweet.user + ": " + tweet.message
+    }).appendTo($body);
   };
 
 };
