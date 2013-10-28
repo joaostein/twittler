@@ -22,17 +22,18 @@ var Twittler = function () {
   };
 
   this.refreshTweets = function () {
-    var index = homeTweetsLength + 1
+    var index = homeTweetsLength + 1;
 
     setInterval(function () {
-      if (typeof(streams.home[index]) === "object") {
+      var tweet = streams.home[index];
+      if (typeof(tweet) === "object") {
         $("<div></div>", {
-          text: "@" + streams.home[index].user + ": " + streams.home[index].message
+          text: "@" + tweet.user + ": " + tweet.message
         }).appendTo($body);
-
         index++;
       }
     }, 500);
+
   };
 
 };
