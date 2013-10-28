@@ -47,6 +47,10 @@ body {
   text-decoration: none;
 }
 
+.tweet-username:hover {
+  color: #005FEE;
+}
+
 .tweet-holder {
   float: left;
 }
