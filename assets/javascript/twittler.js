@@ -34,7 +34,7 @@ var Twittler = function () {
         Twittler.createTweet(tweet, "home");
         index++;
       }
-    }, 500);
+    }, 1000);
   };
 
   this.createTweet = function (tweet, location) {
@@ -68,12 +68,11 @@ var Twittler = function () {
     $(document).on('click', '.tweet-username', function (e) {
       var username = $(this).data("username");
       Twittler.getUserTweets(username);
+      Twittler.loadMoreTweets(username);
       $('#user-tweets').reveal();
-
       e.preventDefault();
     });
 
-    this.loadMoreTweets();
   };
 
   this.getUserTweets = function (username) {
@@ -83,10 +82,10 @@ var Twittler = function () {
     this.fetchData("users", username);
   };
 
-  this.loadMoreTweets = function () {
-    var username = $('.tweet-username').data("username");
+  this.loadMoreTweets = function (username) {
+    // var username = $('.tweet-username').data("username");
 
-    $('.load-more-tweets').on('click', function (e) {
+    $(document).on('click', '.load-more-tweets', function (e) {
       Twittler.getUserTweets(username);
       e.preventDefault();
     });
