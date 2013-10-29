@@ -47,7 +47,7 @@ body {
   text-decoration: none;
 }
 
-.tweet-username:hover {
+a.tweet-username:hover {
   color: #005FEE;
 }
 

@@ -1,40 +1,52 @@
 var Twittler = function () {
   
-  var tweetsWrapper = $('.tweetsWrapper');
-  var homeTweetsLength = streams.home.length;
-
   this.init = function () {
-    this.fetchInitialData();
+    this.fetchInitialData("home");
     this.refreshTweets();
-    this.bindUserTweets();
+    this.revealUserTweets();
   };
 
-  this.fetchInitialData = function () {
-    var index = homeTweetsLength - 1;
+  this.fetchInitialData = function (location, username) {
+    location = location || "home";
+
+    if (location === "users") {
+      var tweets = streams[location][username];
+    } else {
+      var tweets = streams[location]
+    }
+
+    var index = tweets.length - 1;
 
     while(index >= 0){
-      var tweet = streams.home[index];
-      this.createTweet(tweet);
+      var tweet = tweets[index];
+      this.createTweet(tweet, location);
       index -= 1;
     }
   };
 
   this.refreshTweets = function () {
-    var index = homeTweetsLength + 1;
+    var index = streams.home.length + 1;
 
     setInterval(function () {
       var tweet = streams.home[index];
       if (typeof(tweet) === "object") {
-        Twittler.createTweet(tweet);
+        Twittler.createTweet(tweet, "home");
         index++;
       }
     }, 500);
   };
 
-  this.createTweet = function (tweet) {
+  this.createTweet = function (tweet, location) {
+
+    if (location === "home") {
+      var userName = "<a class='tweet-username' href='#' data-username='{{user}}' data-reveal-id=user-tweets'>@{{user}}</a>: "
+    } else if (location === "users"){
+      var userName = "<span class='tweet-username'>@{{user}}</span>: "
+    }
+
     var source = "<div class='tweet clearfix'>" +
                     "<div class='tweet-holder'>" +
-                      "<a class='tweet-username' href='#' data-username='{{user}}' data-reveal-id=user-tweets'>@{{user}}</a>: " +
+                      userName +
                       "<span class='tweet-message'>{{message}}</span>" +
                     "</div>" +
                     "<span class='tweet-created-at'>{{created_at}}</span>" +
@@ -42,42 +54,29 @@ var Twittler = function () {
 
     var template = Handlebars.compile(source);
     var result = template(tweet);
-    $(result).appendTo(tweetsWrapper);
+
+    if (location === "home") {
+      $(result).appendTo($('.tweetsWrapper'));
+    } else if (location === "users") {
+      $(result).appendTo($('#user-tweets > div'));
+    }
   };
 
-  this.bindUserTweets = function () {
-    var tweets = streams.users;
-    
+  this.revealUserTweets = function () {
     $(document).on('click', '.tweet-username', function (e) {
       var username = $(this).data("username");
-
-      Twittler.updateUserTweets(username);
+      Twittler.getUserTweets(username);
       $('#user-tweets').reveal();
 
       e.preventDefault();
     });
   };
 
-  this.updateUserTweets = function (username) {
-    var tweets = streams.users;
-    var index = tweets[username].length;
-
-    $("#user-tweets div").html('');
+  this.getUserTweets = function (username) {
+    $("#user-tweets > div").html('');
     $("#user-tweets h1 span").text("@" + username);
 
-    $.each(tweets[username], function () {
-      var source = "<div class='tweet clearfix'>" +
-                      "<div class='tweet-holder'>" +
-                        "<a class='tweet-username' href='#' data-username='{{user}}' data-reveal-id=user-tweets'>@{{user}}</a>: " +
-                        "<span class='tweet-message'>{{message}}</span>" +
-                      "</div>" +
-                      "<span class='tweet-created-at'>{{created_at}}</span>" +
-                    "</div>";
-
-      var template = Handlebars.compile(source);
-      var result = template(this);
-      $(result).appendTo('#user-tweets > div');
-    });
+    this.fetchInitialData("users", username);
   };
 
 
