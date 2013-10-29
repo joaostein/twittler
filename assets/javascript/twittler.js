@@ -1,18 +1,19 @@
 var Twittler = function () {
   
   this.init = function () {
-    this.fetchInitialData("home");
+    this.fetchData("home");
     this.refreshTweets();
     this.revealUserTweets();
   };
 
-  this.fetchInitialData = function (location, username) {
+  this.fetchData = function (location, username) {
+    var tweets;
     location = location || "home";
 
     if (location === "users") {
-      var tweets = streams[location][username];
+      tweets = streams[location][username];
     } else {
-      var tweets = streams[location]
+      tweets = streams[location];
     }
 
     var index = tweets.length - 1;
@@ -37,11 +38,12 @@ var Twittler = function () {
   };
 
   this.createTweet = function (tweet, location) {
+    var userName;
 
     if (location === "home") {
-      var userName = "<a class='tweet-username' href='#' data-username='{{user}}' data-reveal-id=user-tweets'>@{{user}}</a>: "
+      userName = "<a class='tweet-username' href='#' data-username='{{user}}' data-reveal-id=user-tweets'>@{{user}}</a>: ";
     } else if (location === "users"){
-      var userName = "<span class='tweet-username'>@{{user}}</span>: "
+      userName = "<span class='tweet-username' data-username='{{user}}'>@{{user}}</span>: ";
     }
 
     var source = "<div class='tweet clearfix'>" +
@@ -56,9 +58,9 @@ var Twittler = function () {
     var result = template(tweet);
 
     if (location === "home") {
-      $(result).appendTo($('.tweetsWrapper'));
+      $(result).prependTo($('.tweetsWrapper'));
     } else if (location === "users") {
-      $(result).appendTo($('#user-tweets > div'));
+      $(result).prependTo($('#user-tweets > div'));
     }
   };
 
@@ -70,14 +72,23 @@ var Twittler = function () {
 
       e.preventDefault();
     });
+
+    this.loadMoreTweets();
   };
 
   this.getUserTweets = function (username) {
     $("#user-tweets > div").html('');
     $("#user-tweets h1 span").text("@" + username);
 
-    this.fetchInitialData("users", username);
+    this.fetchData("users", username);
   };
 
+  this.loadMoreTweets = function () {
+    var username = $('.tweet-username').data("username");
 
+    $('.load-more-tweets').on('click', function (e) {
+      Twittler.getUserTweets(username);
+      e.preventDefault();
+    });
+  };
 };
